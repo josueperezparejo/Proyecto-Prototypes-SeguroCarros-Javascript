@@ -73,24 +73,28 @@ UI.prototype.llenarOpciones = () => {
 
 // Muestra alertas en pantalla
 UI.prototype.mostrarMensaje = (mensaje, tipo) => {
-    const div = document.createElement('div');
+    const alerta = document.querySelector('.alerta');
+
+    if(!alerta) {
+        const div = document.createElement('div');
     
-    if(tipo === 'error') {
-        div.classList.add('error');
-    } else {
-        div.classList.add('correcto')
+        if(tipo === 'error') {
+            div.classList.add('error', 'alerta');
+        } else {
+            div.classList.add('correcto', 'alerta');
+        }
+
+        div.classList.add('mensaje', 'mt-10');
+        div.textContent = mensaje;
+
+        // Insertar en el HTML
+        const formulario = document.querySelector('#cotizar-seguro');
+        formulario.insertBefore(div, document.querySelector('#resultado'));
+
+        setTimeout(() => {
+            div.remove();
+        }, 3000);
     }
-
-    div.classList.add('mensaje', 'mt-10');
-    div.textContent = mensaje;
-
-    // Insertar en el HTML
-    const formulario = document.querySelector('#cotizar-seguro');
-    formulario.insertBefore(div, document.querySelector('#resultado'));
-
-    setTimeout(() => {
-        div.remove();
-    }, 3000);
 }
 
 UI.prototype.mostrarResultado = (total, seguro) => {
@@ -113,27 +117,33 @@ UI.prototype.mostrarResultado = (total, seguro) => {
             break;
     }
 
-    // Crear el resultado
-    const div = document.createElement('div');
-    div.classList.add('mt-10')
-    div.innerHTML = `
-        <p class="header">Tu Resumen</p>
-        <p class="font-bold">Marca: <span class="font-normal"> ${textoMarca}</span></p>
-        <p class="font-bold">Año: <span class="font-normal"> ${year}</span></p>
-        <p class="font-bold">Tipo: <span class="font-normal capitalize"> ${tipo}</span></p>
-        <p class="font-bold">Total: <span class="font-normal">$ ${total}</span></p>
-    `;
+    const tuResumen = document.querySelector('.tu-resumen');
 
-    const resultadoDiv = document.querySelector('#resultado');
+    if(!tuResumen) {
+        // Crear el resultado
+        const div = document.createElement('div');
+        div.classList.add('mt-10');
+        div.innerHTML = `
+            <p class="header">Tu Resumen</p>
+            <p class="font-bold">Marca: <span class="font-normal"> ${textoMarca}</span></p>
+            <p class="font-bold">Año: <span class="font-normal"> ${year}</span></p>
+            <p class="font-bold">Tipo: <span class="font-normal capitalize"> ${tipo}</span></p>
+            <p class="font-bold">Total: <span class="font-normal">$ ${total}</span></p>
+        `;
 
-    // Mostrar Spinner
-    const spinner = document.querySelector('#cargando');
-    spinner.style.display = 'block';
+        const resultadoDiv = document.querySelector('#resultado');
+        resultadoDiv.classList.add('tu-resumen');
 
-    setTimeout(() => {
-        spinner.style.display = 'none'; // Se borra el spinner
-        resultadoDiv.appendChild(div); // Se muestra el resultado
-    }, 3000);
+        // Mostrar Spinner
+        const spinner = document.querySelector('#cargando');
+        spinner.style.display = 'block';
+
+        setTimeout(() => {
+            spinner.style.display = 'none'; // Se borra el spinner
+            resultadoDiv.appendChild(div); // Se muestra el resultado
+            resultadoDiv.classList.remove('tu-resumen');
+        }, 3000);
+    }
 }
 
 // Instanciar UI
